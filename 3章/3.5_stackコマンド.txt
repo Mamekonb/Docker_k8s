@@ -1,0 +1,19 @@
+docker container exec -it manager docker network create --driver=overlay --attachable ch03
+
+docker container exec -it manager docker stack deploy -c /stack/ch03-webapi.yml echo
+
+docker container exec -it manager docker stack services echo
+
+docker container exec -it manager docker stack ps echo
+
+docker container exec -it manager docker stack deploy -c /stack/visualizer.yaml visualizer
+
+docker container exec -it manager docker stack rm echo
+
+docker container exec -it manager docker stack deploy -c /stack/ch03-webapi_2.yml echo
+
+docker container exec -it manager docker stack deploy -cd /stack/ch03-ingress.yml ingress
+
+docker container exec -it manager docker service ls
+
+curl http://localhost:8000/
