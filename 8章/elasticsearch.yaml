@@ -1,0 +1,83 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: elasticsearch-pvc
+  namespace: kube-system
+  labels:
+    kuvernetes.io/cluster-service: "true"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      strage: 2G
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  namespace: kube-system
+spec:
+  selector:
+    app: elasticsearch
+  ports:
+  - protocol: TCP
+    port: 9200
+    targetPort: http
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+  namespace: kube-system
+  labels:
+    app: elasticsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        image: elasticsearch:5.6-alpine
+        ports:
+        - containerPort: 9200
+          name: http
+        volumeMounts:
+        - mountPath: /data
+          name: elasticsearch-pvc
+        - mountPath: /usr/share/elasticsearch/config
+          name: elasticsearch-config
+        volumes:
+        - name: elasticsearch-pvc
+          PersistentVolumeClaim:
+            claimName: elasticsearch-pvc
+        - name: elasticsearch-config
+          configmap:
+            name: elasticsearch-config
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elasticsearch-config
+  namespace: kube-system
+data:
+  elasticsearch.yml: |-
+    http.host: 0.0.0.0
+  log4j2.properties: |-
+    status = error
+
+jvm.options: |-
+
+
+
+
+

@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Replicaset
+metadata:
+  name: echo
+  labels:
+    app: echo
+    release: spring
+spec:
+  replicas: 3
+  selector:
+    matchLavels:
+      app: echo
+      release: spring
+  template:
+    metadata:
+    lavels:
+      app: echo
+      release: spring
+  spec:
+    containers:
+    - name: nginx
+      image: gihyodocker/nginx-proxy:latest
+      env:
+      - name: BACKEND_HOST
+      value: localhost:8080
+      ports:
+      - containerPort: 80
+    - name: echo
+    image: gihyodocker/nginx-proxy:latest
+    ports:
+      - containerPort: 8080
+
+---
+apiVersion: apps/v1
+kind: Replicaset
+metadata:
+  name: echo
+  labels:
+    app: echo
+    release: summer
+spec:
+  replicas: 3
+  selector:
+    matchLavels:
+      app: echo
+      release: summer
+  template:
+    metadata:
+    lavels:
+      app: echo
+      release: summer
+  spec:
+    containers:
+    - name: nginx
+      image: gihyodocker/nginx-proxy:latest
+      env:
+      - name: BACKEND_HOST
+      value: localhost:8080
+      ports:
+      - containerPort: 80
+    - name: echo
+    image: gihyodocker/nginx-proxy:latest
+    ports:
+      - containerPort: 8080

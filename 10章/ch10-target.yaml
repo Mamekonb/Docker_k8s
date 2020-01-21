@@ -1,0 +1,14 @@
+version: "3"
+services:
+  echo:
+    image: gihyodocker/echo:latest
+    deploy:
+      replicas: 3
+      placement:
+        contraints: [node.role != manager]
+    networks:
+      - loadtest
+
+networks:
+  loadtest:
+    external: true
